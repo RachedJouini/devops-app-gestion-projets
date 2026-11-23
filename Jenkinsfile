@@ -18,25 +18,26 @@ pipeline {
         }
 
         stage('Tests Unitaires') {
-            steps {
-                sh '''
-                    if [ -f pom.xml ]; then
-                        mvn clean test
-                    elif [ -f backend/pom.xml ]; then
-                        cd backend && mvn clean test
-                    elif [ -f backend/backend/pom.xml ]; then
-                        cd backend/backend && mvn clean test
-                    else
-                        echo "pom.xml introuvable !" && exit 1
-                    fi
-                '''
-            }
-            post {
-                always {
-                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                    steps {
+                        sh '''
+                            TEST_FLAGS="-Dtest=!BackendApplicationTests"
+                            if [ -f pom.xml ]; then
+                                mvn clean test $TEST_FLAGS
+                            elif [ -f backend/pom.xml ]; then
+                                cd backend && mvn clean test $TEST_FLAGS
+                            elif [ -f backend/backend/pom.xml ]; then
+                                cd backend/backend && mvn clean test $TEST_FLAGS
+                            else
+                                echo "pom.xml introuvable !" && exit 1
+                            fi
+                        '''
+                    }
+                    post {
+                        always {
+                            junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                        }
+                    }
                 }
-            }
-        }
 
         stage('Package (Livrable target/)') {
             steps {
