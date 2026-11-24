@@ -20,7 +20,7 @@ pipeline {
         stage('Tests Unitaires') {
                     steps {
                         sh '''
-                            TEST_FLAGS="-Dtest=!BackendApplicationTests -Dsurefire.failIfNoSpecifiedTests=false"
+                            TEST_FLAGS="-Dtest=*Test -Dsurefire.failIfNoSpecifiedTests=false"
                             if [ -f pom.xml ]; then
                                 mvn clean test $TEST_FLAGS
                             elif [ -f backend/pom.xml ]; then
